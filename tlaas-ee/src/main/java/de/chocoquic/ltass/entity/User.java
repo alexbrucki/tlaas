@@ -21,9 +21,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Data
 @EqualsAndHashCode(of = "account_type")
-@Table(name = "timeline_user")
-@NamedQuery(name = "TimelineUser.findAll", query = "SELECT t FROM TimelineUser t")
-public class TimelineUser extends DBEntity implements Serializable {
+@Table(name = "user")
+@NamedQuery(name = "User.findAll", query = "SELECT t FROM User t")
+public class User extends DBEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class TimelineUser extends DBEntity implements Serializable {
 
     //bi-directional many-to-many association to TimelineData
     @ManyToMany
-    @JoinTable(name = "timeline_user_role", joinColumns = {
+    @JoinTable(name = "user_role", joinColumns = {
         @JoinColumn(name = "user_id", nullable = false)}, inverseJoinColumns = {
         @JoinColumn(name = "timeline_data_id", nullable = false)})
     private Set<TimelineData> timelineData;
@@ -50,7 +50,7 @@ public class TimelineUser extends DBEntity implements Serializable {
     @OneToMany(mappedBy = "timelineUser")
     private Set<TimelineUserRole> timelineUserRoles;
 
-    public TimelineUser() {
+    public User() {
     }
 
     public TimelineUserRole addTimelineUserRole(TimelineUserRole timelineUserRole) {

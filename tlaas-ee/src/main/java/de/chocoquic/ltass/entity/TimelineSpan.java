@@ -45,7 +45,7 @@ public class TimelineSpan extends DBEntity implements Serializable {
     @Column(length = 65)
     private String overlay;
 
-    private byte slider;
+    private Boolean slider;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "start_date", nullable = false)
@@ -54,7 +54,7 @@ public class TimelineSpan extends DBEntity implements Serializable {
     @Column(length = 65)
     private String style;
 
-    private byte text;
+    private Boolean text;
 
     @Column(length = 255)
     private String title;

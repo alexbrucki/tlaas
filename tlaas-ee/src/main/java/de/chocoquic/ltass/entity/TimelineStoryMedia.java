@@ -29,7 +29,7 @@ public class TimelineStoryMedia extends DBEntity implements Serializable {
     private byte[] data;
 
     @Column(nullable = false)
-    private byte external;
+    private Boolean external;
 
     @Column(length = 255)
     private String link;

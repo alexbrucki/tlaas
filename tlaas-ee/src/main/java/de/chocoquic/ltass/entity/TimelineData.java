@@ -1,7 +1,8 @@
 package de.chocoquic.ltass.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -32,8 +33,6 @@ import lombok.EqualsAndHashCode;
 })
 public class TimelineData extends DBEntity implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @Column(name = "about_text", length = 1000)
     private String aboutText;
 
@@ -58,28 +57,27 @@ public class TimelineData extends DBEntity implements Serializable {
     @Column(name = "bg_style")
     private int bgStyle;
 
-    private byte copyable;
+    private Boolean copyable;
 
     @Column(name = "css_file", length = 65)
     private String cssFile;
 
     @Column(name = "display_stripes")
-    private byte displayStripes;
+    private Boolean displayStripes;
 
     @Column(name = "dont_display_intro_panel")
-    private byte dontDisplayIntroPanel;
+    private Boolean dontDisplayIntroPanel;
 
     @Column(name = "dur_headline_colour", length = 65)
     private String durHeadlineColour;
 
-    private byte embed;
+    private Boolean embed;
 
     @Column(name = "embed_hash", length = 65)
     private String embedHash;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "end_date")
-    private Date endDate;
+    private LocalDateTime endDate;
 
     private int expander;
 
@@ -98,13 +96,13 @@ public class TimelineData extends DBEntity implements Serializable {
     @Column(name = "header_text_colour", length = 65)
     private String headerTextColour;
 
-    private byte homepage;
+    private Boolean homepage;
 
     @Column(length = 255)
     private String host;
 
     @Column(name = "html_formatting")
-    private byte htmlFormatting;
+    private Boolean htmlFormatting;
 
     @Column(name = "initial_focus", length = 65)
     private String initialFocus;
@@ -119,39 +117,39 @@ public class TimelineData extends DBEntity implements Serializable {
     private String introText;
 
     @Column(name = "is_public")
-    private byte isPublic;
+    private Boolean isPublic;
 
     @Column(length = 65)
     private String language;
 
     @Column(name = "lazy_loading")
-    private byte lazyLoading;
+    private Boolean lazyLoading;
 
     @Column(name = "light_box_style")
-    private byte lightBoxStyle;
+    private Boolean lightBoxStyle;
 
     @Column(name = "main_colour", length = 65)
     private String mainColour;
 
     @Column(name = "open_read_more_links")
-    private byte openReadMoreLinks;
+    private Boolean openReadMoreLinks;
 
-    private byte secret;
+    private Boolean secret;
 
     @Column(length = 1000)
     private String settings3d;
 
     @Column(name = "show_ad_block")
-    private byte showAdBlock;
+    private Boolean showAdBlock;
 
     @Column(name = "show_controls")
-    private byte showControls;
+    private Boolean showControls;
 
     @Column(name = "show_group_author_names")
-    private byte showGroupAuthorNames;
+    private Boolean showGroupAuthorNames;
 
     @Column(name = "show_title_block")
-    private byte showTitleBlock;
+    private Boolean showTitleBlock;
 
     @Column(name = "slider_background_colour", length = 65)
     private String sliderBackgroundColour;
@@ -168,9 +166,8 @@ public class TimelineData extends DBEntity implements Serializable {
     @Column(name = "slider_text_colour", length = 65)
     private String sliderTextColour;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "start_date")
-    private Date startDate;
+    private LocalDateTime startDate;
 
     @Column(name = "story_date_format", length = 65)
     private String storyDateFormat;
@@ -191,7 +188,7 @@ public class TimelineData extends DBEntity implements Serializable {
     private String urlFriendlyTitle;
 
     @Column(name = "url_hashing")
-    private byte urlHashing;
+    private Boolean urlHashing;
 
     @Column(name = "view_type")
     private int viewType;
@@ -217,7 +214,7 @@ public class TimelineData extends DBEntity implements Serializable {
 
     //bi-directional many-to-many association to TimelineUser
     @ManyToMany(mappedBy = "timelineData")
-    private Set<TimelineUser> timelineUsers;
+    private Set<User> timelineUsers;
 
     //bi-directional many-to-one association to TimelineUserRole
     @OneToMany(mappedBy = "timelineData")
@@ -281,5 +278,7 @@ public class TimelineData extends DBEntity implements Serializable {
 
         return timelineUserRole;
     }
+
+
 
 }

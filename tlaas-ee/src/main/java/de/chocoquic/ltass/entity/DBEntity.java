@@ -1,20 +1,20 @@
 package de.chocoquic.ltass.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @SuppressWarnings("serial")
 @MappedSuperclass
+@EqualsAndHashCode(of = "id")
 @Data
 public abstract class DBEntity implements Serializable, Cloneable {
 
@@ -23,14 +23,15 @@ public abstract class DBEntity implements Serializable, Cloneable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created", insertable = false, updatable = false)
-    private Date created;
+    @Column(name = "created", updatable = false)
+    private LocalDateTime created;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "changed", insertable = false, updatable = false)
-    private Date changed;
+    @Column(name = "changed")
+    private LocalDateTime changed;
 
+    @Column(name = "changed_by")
+    private String username;
+    
     @Override
     public DBEntity clone() throws CloneNotSupportedException {
         DBEntity dbEntity = (DBEntity) super.clone();

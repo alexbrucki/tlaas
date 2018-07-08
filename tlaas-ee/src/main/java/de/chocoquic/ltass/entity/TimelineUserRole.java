@@ -31,7 +31,7 @@ public class TimelineUserRole extends DBEntity implements Serializable {
     //bi-directional many-to-one association to TimelineUser
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private TimelineUser timelineUser;
+    private User timelineUser;
 
     //bi-directional many-to-one association to UserRole
     @ManyToOne

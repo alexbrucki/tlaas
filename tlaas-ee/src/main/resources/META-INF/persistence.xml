@@ -3,15 +3,6 @@
     <persistence-unit name="tlaas-pu">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>java:jboss/datasources/tlaasD</jta-data-source> 
-		<class>ejb31.entity.TimelineCategory</class>
-		<class>ejb31.entity.TimelineData</class>
-		<class>ejb31.entity.TimelineFeed</class>
-		<class>ejb31.entity.TimelineSpan</class>
-		<class>ejb31.entity.TimelineStory</class>
-		<class>ejb31.entity.TimelineStoryMedia</class>
-		<class>ejb31.entity.TimelineUser</class>
-		<class>ejb31.entity.TimelineUserRole</class>
-		<class>ejb31.entity.UserRole</class>
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="true" />
