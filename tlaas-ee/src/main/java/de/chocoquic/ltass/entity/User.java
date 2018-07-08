@@ -47,7 +47,7 @@ public class User extends DBEntity implements Serializable {
     private Set<TimelineData> timelineData;
 
     //bi-directional many-to-one association to TimelineUserRole
-    @OneToMany(mappedBy = "timelineUser")
+    @OneToMany(mappedBy = "User")
     private Set<TimelineUserRole> timelineUserRoles;
 
     public User() {
@@ -55,14 +55,14 @@ public class User extends DBEntity implements Serializable {
 
     public TimelineUserRole addTimelineUserRole(TimelineUserRole timelineUserRole) {
         getTimelineUserRoles().add(timelineUserRole);
-        timelineUserRole.setTimelineUser(this);
+        timelineUserRole.setUser(this);
 
         return timelineUserRole;
     }
 
     public TimelineUserRole removeTimelineUserRole(TimelineUserRole timelineUserRole) {
         getTimelineUserRoles().remove(timelineUserRole);
-        timelineUserRole.setTimelineUser(null);
+        timelineUserRole.setUser(null);
 
         return timelineUserRole;
     }
