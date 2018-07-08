@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_1.xsd">
+    <persistence-unit name="tlaas-pu">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>java:jboss/datasources/tlaasD</jta-data-source> 
+		<class>ejb31.entity.TimelineCategory</class>
+		<class>ejb31.entity.TimelineData</class>
+		<class>ejb31.entity.TimelineFeed</class>
+		<class>ejb31.entity.TimelineSpan</class>
+		<class>ejb31.entity.TimelineStory</class>
+		<class>ejb31.entity.TimelineStoryMedia</class>
+		<class>ejb31.entity.TimelineUser</class>
+		<class>ejb31.entity.TimelineUserRole</class>
+		<class>ejb31.entity.UserRole</class>
+		<properties>
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
+			<property name="hibernate.hbm2ddl.auto" value="validate" />
+
+			<property name="hibernate.c3p0.min_size" value="1" />
+			<property name="hibernate.c3p0.max_size" value="5" />
+			<property name="hibernate.c3p0.timeout" value="60" />
+		</properties>
+		
+    </persistence-unit>
+</persistence>
