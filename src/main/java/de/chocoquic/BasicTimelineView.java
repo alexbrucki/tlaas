@@ -1,12 +1,6 @@
 package de.chocoquic;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,8 +14,6 @@ import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 import org.apache.log4j.Logger;
@@ -34,17 +26,17 @@ import org.primefaces.model.chart.LineChartSeries;
 import org.primefaces.model.timeline.TimelineEvent;
 import org.primefaces.model.timeline.TimelineModel;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
 
 import de.chocoquic.model.Categories;
 import de.chocoquic.model.Stories;
 import de.chocoquic.model.TLTimelineData;
+import java.util.Arrays;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 import lombok.Data;
 
 @SuppressWarnings("serial")
-@ManagedBean(name = "basicTimelineView")
+@Named("basicTimelineView")
 @SessionScoped
 @Data
 public class BasicTimelineView implements Serializable {
@@ -89,23 +81,25 @@ public class BasicTimelineView implements Serializable {
         format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         model = new TimelineModel();
         logger.info("building Maps");
-        catMap = new HashMap<String, Categories>();
-        serMap = new HashMap<String, LineChartSeries>();
-        storMap = new HashMap<String, Stories>();
+        catMap = new HashMap<>();
+        serMap = new HashMap<>();
+        storMap = new HashMap<>();
         logger.info("Maps built");
-        for (Categories c : data.getCategories()) {
+        data.getCategories().stream().map((c) -> {
             catMap.put(c.getId(), c);
+            return c;
+        }).forEach((c) -> {
             LineChartSeries series = new LineChartSeries();
             series.setLabel(c.getTitle());
             series.setShowLine(false);
             serMap.put(c.getId(), series);
             logger.info("Category added: " + c.getId());
-        }
+        });
 
         int i = 0;
         Random randomGenerator = new Random();
         Calendar cal = Calendar.getInstance();
-        for (Stories s : data.getStories()) {
+        data.getStories().stream().forEach((s) -> {
             logger.info("Story added: " + s.getTitle());
             try {
                 adjustStartDateAndAddToStoryMap(cal, s);
@@ -153,22 +147,22 @@ public class BasicTimelineView implements Serializable {
             } catch (ParseException e) {
                 logger.info("parse exception in Json: " + e.getMessage());
             } catch (Exception e) {
-                logger.info(loggingPrefix + " Exception in Method initialize while parsin json: " + e.getMessage() + " " + e.getStackTrace());
+                logger.info(loggingPrefix + " Exception in Method initialize while parsin json: " + e.getMessage() + " " + Arrays.toString(e.getStackTrace()));
             }
-
-        }
+        });
         StringBuilder seriesColors = new StringBuilder();
         try {
-            for (String key : serMap.keySet()) {
+            serMap.keySet().stream().map((key) -> {
                 dateModel.addSeries(serMap.get(key));
+                return key;
+            }).forEachOrdered((key) -> {
                 if (seriesColors.length() < 1) {
                     seriesColors.append(catMap.get(key).getColour());
                 } else {
                     seriesColors.append(",");
                     seriesColors.append(catMap.get(key).getColour());
                 }
-
-            }
+            });
 
             dateModel.setSeriesColors(seriesColors.toString());
 
@@ -181,8 +175,8 @@ public class BasicTimelineView implements Serializable {
             axis.setTickFormat("%#d. %b. %y");
             dateModel.getAxes().put(AxisType.X, axis);
             System.out.println("done");
-        } catch (Exception e) {
-            logger.error("unexpected exception " + e.getMessage() + " " + e.getMessage());
+        } catch (Exception ex) {
+            logger.error("unexpected exception " + ex.getMessage() + " " + ex.getMessage());
         }
 
     }
@@ -200,9 +194,9 @@ public class BasicTimelineView implements Serializable {
                 cal.setTime(format.parse(s.getEndDate()));
                 cal.add(Calendar.SECOND, 1);
                 s.setEndDate(format.format(cal.getTime()));
-            } catch (ParseException e) {
+            } catch (ParseException ex) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                logger.error("ParseException " + ex.getMessage());
             }
             adjustStartDateAndAddToStoryMap(cal, s);
         }
@@ -212,19 +206,18 @@ public class BasicTimelineView implements Serializable {
         event.getItemIndex();
 
         LineChartSeries series = (LineChartSeries) dateModel.getSeries().get(event.getSeriesIndex());
-        ArrayList<String> dates = new ArrayList<String>();
-        for (Object key : series.getData().keySet()) {
-            if (key instanceof String) {
-                dates.add((String) key);
-            }
-        }
+        ArrayList<String> dates = new ArrayList<>();
+        series.getData().keySet().stream()
+                .filter((key) -> (key instanceof String))
+                .forEach((key) -> {
+                    dates.add((String) key);
+                });
         Collections.sort(dates);
         Date d = null;
         try {
             d = format.parse(dates.get(event.getItemIndex()));
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (ParseException ex) {
+            logger.error("ParseException " + ex.getMessage());
         }
         if (null != d) {
             this.start = d;
@@ -264,20 +257,14 @@ public class BasicTimelineView implements Serializable {
     }
 
     public void setDialogValues() {
-        Map<String, String> parameterMap = (Map<String, String>) FacesContext.getCurrentInstance().getExternalContext()
-                .getRequestParameterMap();
+        Map<String, String> parameterMap = (Map<String, String>) FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 
         this.storyDate = parameterMap.get("date");
         Stories story = storMap.get(this.storyDate);
         this.storyTitle = story.getTitle();
         this.storyText = wrapStringAfterWhitespaceWithIndex(story.getText(), 50);
         this.link = story.getExternalLink();
-        if (this.link == null || this.link.isEmpty()) {
-            this.linkRendered = false;
-        } else {
-            this.linkRendered = true;
-        }
-
+        this.linkRendered = !(this.link == null || this.link.isEmpty());
     }
 
     public void test() throws Exception {
