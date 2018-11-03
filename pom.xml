@@ -1,328 +1,279 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>de.chocoquic</groupId>
     <artifactId>tlaas</artifactId>
-    <version>1.0</version>
-    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+
     <name>tlaas</name>
-    <developers>
-        <developer>
-            <id>alex.brueckbauer</id>
-            <name>Alex Bruckbauer</name>
-            <email>alex.brueckbauer at lisa dot de</email>
-            <organization>XXX GmbH</organization>
-            <organizationUrl>http://</organizationUrl>
-            <roles>
-                <role>Java Developer</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>jens.papenhagen</id>
-            <name>Jens Papenhagen</name>
-            <email>jens.papenhagen at web dot de</email>
-            <organization>XXX GmbH</organization>
-            <organizationUrl>http://</organizationUrl>
-            <roles>
-                <role>Java Developer</role>
-            </roles>
-        </developer>
-    </developers>
+
+    <properties>
+        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
     <repositories>
         <repository>
-            <id>netbeans-api</id>
-            <name>Netbeans Api Repository</name>
-            <url>http://bits.netbeans.org/maven2/</url>
+            <url>http://repository.primefaces.org/</url>
+            <id>PrimeFaces-maven-lib</id>
+            <layout>default</layout>
+            <name>Repository for library PrimeFaces-maven-lib</name>
         </repository>
-        <repository>  
-            <id>prime-repo</id>  
-            <name>PrimeFaces Maven Repository</name>  
-            <url>http://repository.primefaces.org</url>  
-            <layout>default</layout>  
-        </repository>  
     </repositories>
-  
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-        </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.1.1</version>
-                </plugin>      
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.0</version>
-                </plugin>        
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.22.0</version>
-                </plugin>        
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.7.0</version>
-                    <configuration>
-                        <compilerArguments>
-                            <Xlint />
-                        </compilerArguments>
-                        <source>1.8</source>
-                        <target>1.8</target>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-ejb-plugin</artifactId>
-                    <version>3.0.1</version>
-                    <configuration>
-                        <ejbVersion>3.1</ejbVersion>
-                        <archive>
-                            <manifest>
-                                <addClasspath>true</addClasspath>
-                            </manifest>
-                        </archive>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>3.2.2</version>
-                    <configuration>
-                        <failOnMissingWebXml>false</failOnMissingWebXml>
-                        <webResources>
-                            <resource>
-                                <directory>${basedir}/src/main/webapp/WEB-INF</directory>
-                                <filtering>true</filtering>
-                                <targetPath>WEB-INF</targetPath>
-                            </resource>
-                        </webResources>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.1.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.1.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>de.juplo</groupId>
-                    <artifactId>hibernate4-maven-plugin</artifactId>
-                    <version>1.1.1</version>
-                    <configuration>
-                        <envers>true</envers>
-                        <format>true</format>
-                        <delimiter>;</delimiter>
-                        <force>true</force>
-                        <type>CREATE</type>
-                        <target>SCRIPT</target>
-                        <hibernateDialect>org.hibernate.dialect.MySQLDialect</hibernateDialect>
-                    </configuration>
-                </plugin> 
-                <plugin>
-                    <!-- Default Config for Query DSL, add plugin to project build to actually activate it -->
-                    <groupId>com.mysema.maven</groupId>
-                    <artifactId>apt-maven-plugin</artifactId>
-                    <version>1.1.3</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>process</goal>
-                            </goals>
-                            <configuration>
-                                <outputDirectory>target/generated-sources/querydsl</outputDirectory>
-                                <processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
-                            </configuration>
-                        </execution>
-                    </executions>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.querydsl</groupId>
-                            <artifactId>querydsl-apt</artifactId>
-                            <version>4.2.1</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>com.querydsl</groupId>
-                            <artifactId>querydsl-collections</artifactId>
-                            <version>4.2.1</version>
-                        </dependency>    
-                    </dependencies>
-                </plugin>        
-            </plugins>
-        </pluginManagement>
-    </build>
+    
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>1.4.0.Final</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.arquillian</groupId>
-                <artifactId>wildfly-arquillian-container-remote</artifactId>
-                <version>2.1.1.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wildfly.arquillian</groupId>
-                <artifactId>wildfly-arquillian-container-managed</artifactId>
-                <version>2.1.1.Final</version>
-            </dependency>
-            
+            <!--javaee dependencies-->
             <dependency>
                 <groupId>javax</groupId>
-                <artifactId>javaee-web-api</artifactId>
-                <version>7.0</version>
+                <artifactId>javaee-api</artifactId>
+                <version>8.0</version>
+                <type>jar</type>
+            </dependency> 
+            <dependency>
+                <groupId>org.primefaces</groupId>
+                <artifactId>primefaces</artifactId>
+                <version>6.2</version>
+                <type>jar</type>
             </dependency>
+            <!--logging-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.25</version>
             </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.25</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-jdk14</artifactId>
-                <version>1.7.25</version>
-            </dependency>
+            <!--lombok dependencies-->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.16.18</version>
-            </dependency>
-            <!-- Need a version which matchs the wildfly -->
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-envers</artifactId>
-                <version>4.2.12.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
-            </dependency>
-            <dependency>
-                <groupId>taglibs</groupId>
-                <artifactId>standard</artifactId>
-                <version>1.1.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.primefaces</groupId>
-                <artifactId>primefaces</artifactId>
-                <version>6.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.primefaces.themes</groupId>
-                <artifactId>all-themes</artifactId> 
-                <version>1.0.10</version>
-            </dependency>
-            <dependency>
-                <groupId>org.primefaces.extensions</groupId>
-                <artifactId>primefaces-extensions</artifactId>
-                <version>6.2.7</version>
-            </dependency>
-            <dependency>
-                <groupId>org.omnifaces</groupId>
-                <artifactId>omnifaces</artifactId>
-                <version>3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>1.3.3</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>3.7</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-text</artifactId>
-                <version>1.4</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.6</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.sanselan</groupId>
-                <artifactId>sanselan</artifactId>
-                <version>0.97-incubator</version>
-            </dependency>
-           
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>3.10.0</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.querydsl</groupId>
-                <artifactId>querydsl-jpa</artifactId>
-                <version>4.2.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.querydsl</groupId>
-                <artifactId>querydsl-sql</artifactId>
-                <version>4.2.1</version>
-            </dependency>
-           
-            <dependency>
-                <groupId>org.apache.poi</groupId>
-                <artifactId>poi</artifactId>
-                <version>3.17</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.poi</groupId>
-                <artifactId>poi-ooxml</artifactId>
-                <version>3.17</version>
+                <version>1.18.2</version>
+                <type>jar</type>
             </dependency>
         </dependencies>
-    </dependencyManagement>
-    <modules>
-        <module>tlaas-web</module>
-        <module>tlaas-ee</module>
-    </modules>
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    </properties>
-	
+    </dependencyManagement> 
+    
+    
+    <dependencies>
+        <!--JSON-->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.5</version>
+            <type>jar</type>
+        </dependency>
+        
+        <!--testing-->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.11.1</version>
+            <scope>test</scope>
+            <type>jar</type>   
+        </dependency> 
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-remote</artifactId>
+            <version>2.0.2.Final</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-managed</artifactId>
+            <version>2.1.1.Final</version>
+            <type>jar</type>
+        </dependency> 
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-test-api</artifactId>
+            <version>1.4.1.Final</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+            <version>3.1.3</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <version>1.4.1.Final</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>       
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <version>3.1.3</version>
+            <scope>test</scope>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+        </dependency>
+    </dependencies>
+
+  <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.1</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.1</version>
+            </plugin>
+        </plugins>
+        <finalName>tlaas</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>    
+    <profiles>
+        <profile>
+            <id>integration-wildfly-remote</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-remote</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.22.1</version>
+                        <configuration>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <systemPropertyVariables>
+                                <arquillian.launch>wildfly-remote</arquillian.launch>
+                            </systemPropertyVariables>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <profile>
+            <id>integration-wildfly-managed</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <systemPropertyVariables>
+                                <arquillian.launch>wildfly-managed</arquillian.launch>
+                            </systemPropertyVariables>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!--Download and extract wildfly-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.wildfly</groupId>
+                                            <artifactId>wildfly-dist</artifactId>
+                                            <version>14.0.1.Final</version>
+                                            <type>zip</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>target</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
