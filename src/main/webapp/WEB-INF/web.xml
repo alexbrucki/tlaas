@@ -34,17 +34,6 @@
         <welcome-file>index.xhtml</welcome-file>
     </welcome-file-list>
     
-    <filter>
-        <filter-name>gzipResponseFilter</filter-name>
-        <filter-class>org.omnifaces.filter.GzipResponseFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>gzipResponseFilter</filter-name>
-        <servlet-name>Faces Servlet</servlet-name>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>ERROR</dispatcher>
-    </filter-mapping>
-    
     <mime-mapping>
         <extension>eot</extension>
         <mime-type>application/vnd.ms-fontobject</mime-type>
