@@ -21,10 +21,11 @@ import javax.enterprise.inject.Produces;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 
-@SuppressWarnings("serial")
+
 @Singleton()
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @Named("genericFasade")
+@SuppressWarnings("serial")
 public class GenericFasade<Path extends EntityPath, T> implements Serializable {
 
     private static final int BULK_INSERT_BATCH_SIZE = 50;
