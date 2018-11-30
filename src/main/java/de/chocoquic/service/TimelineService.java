@@ -1,6 +1,5 @@
 package de.chocoquic.service;
 
-import java.util.ArrayList;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,6 +12,7 @@ import de.chocoquic.entity.TimelineCategory;
 import de.chocoquic.entity.TimelineData;
 import de.chocoquic.entity.TimelineStory;
 import java.io.Serializable;
+import java.util.List;
 import javax.inject.Named;
 
 @Named
@@ -32,7 +32,7 @@ public class TimelineService  implements Serializable{
         return timelineCategoryDao.findById(TimelineCategory.class, id);
     }
 
-    public ArrayList<TimelineCategory> findTimelineCategoryByTimelineData(TimelineData timelineData) {
+    public List<TimelineCategory> findTimelineCategoryByTimelineData(TimelineData timelineData) {
         return timelineCategoryDao.findByTimelineData(timelineData);
     }
 
@@ -41,7 +41,7 @@ public class TimelineService  implements Serializable{
 
     }
 
-    public ArrayList<TimelineStory> findTimelineStoryByTimelineData(TimelineData timelineData) {
+    public List<TimelineStory> findTimelineStoryByTimelineData(TimelineData timelineData) {
         return timelineStoryDao.findByTimelineData(timelineData);
     }
 

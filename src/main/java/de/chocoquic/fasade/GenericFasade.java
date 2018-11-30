@@ -143,8 +143,8 @@ public class GenericFasade<Path extends EntityPath, T> implements Serializable {
         JPAQuery query = new JPAQuery(em);
         return query.from(qPath).fetch();
     }
-
-    /**
+    
+     /**
      * Returns all entities of the defineClass or an empty list. This is the
      * eager implementation. If the Entity implements {@link EagerAble}, the
      * method fetchEager is called in the transaction.

@@ -1,9 +1,7 @@
 package de.chocoquic.fasade;
 
+import com.querydsl.jpa.impl.JPAQuery;
 import de.chocoquic.entity.QTimelineCategory;
-import java.util.ArrayList;
-
-import javax.persistence.TypedQuery;
 
 import de.chocoquic.entity.TimelineCategory;
 import de.chocoquic.entity.TimelineData;
@@ -12,20 +10,27 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 
+import java.util.List;
+
 @Named
 @ApplicationScoped
-public class TimelineCategoryFasade extends GenericFasade<QTimelineCategory,TimelineCategory> {
-   
+public class TimelineCategoryFasade extends GenericFasade<QTimelineCategory, TimelineCategory> {
+
     @Inject
     private EntityManager entityManager;
 
-    public ArrayList<TimelineCategory> findByTimelineData(TimelineData timelineData) {
-        TypedQuery<TimelineCategory> query = entityManager.createNamedQuery("TimelineCategory.findByTimelineData", TimelineCategory.class);
-        query.setParameter("timelineData", timelineData);
-        ArrayList<TimelineCategory> result = new ArrayList<>();
-        result.addAll(query.getResultList());
+    public List<TimelineCategory> findByTimelineData(TimelineData timelineData) {
+//        TypedQuery<TimelineCategory> query = entityManager.createNamedQuery("TimelineCategory.findByTimelineData", TimelineCategory.class);
+//        query.setParameter("timelineData", timelineData);
+//        ArrayList<TimelineCategory> result = new ArrayList<>();
+//        result.addAll(query.getResultList());
+// return result;
 
-        return result;
+        return new JPAQuery<TimelineCategory>(entityManager)
+                .from(qPath)
+                .where(qPath.timelineData.eq(timelineData))
+                .fetch();
+
     }
 
 }

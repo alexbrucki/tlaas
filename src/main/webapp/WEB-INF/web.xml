@@ -30,9 +30,6 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
-    <welcome-file-list>
-        <welcome-file>index.xhtml</welcome-file>
-    </welcome-file-list>
     
     <mime-mapping>
         <extension>eot</extension>
@@ -67,11 +64,11 @@
     
     <error-page>
         <error-code>500</error-code>
-        <location>/web/error.xhtml</location>
+        <location>/error.xhtml</location>
     </error-page>
     
     <welcome-file-list>
-        <welcome-file>web/Authentication.xhtml</welcome-file>
+        <welcome-file>/Authentication.xhtml</welcome-file>
     </welcome-file-list>
     
 </web-app>
