@@ -17,8 +17,8 @@ import lombok.EqualsAndHashCode;
  *
  */
 @Entity
+@EqualsAndHashCode(callSuper = true, of = "link")
 @Data
-@EqualsAndHashCode(of = "link")
 @Table(name = "timeline_story_media")
 @NamedQuery(name = "TimelineStoryMedia.findAll", query = "SELECT t FROM TimelineStoryMedia t")
 public class TimelineStoryMedia extends DBEntity implements Serializable {

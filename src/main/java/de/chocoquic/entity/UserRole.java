@@ -16,8 +16,8 @@ import lombok.EqualsAndHashCode;
  *
  */
 @Entity
+@EqualsAndHashCode(callSuper = true, of = "userRole")
 @Data
-@EqualsAndHashCode(of = "userRole")
 @Table(name = "user_role")
 @NamedQuery(name = "UserRole.findAll", query = "SELECT u FROM UserRole u")
 public class UserRole extends DBEntity implements Serializable {

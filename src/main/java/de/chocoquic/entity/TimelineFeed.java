@@ -17,8 +17,8 @@ import lombok.EqualsAndHashCode;
  *
  */
 @Entity
+@EqualsAndHashCode(callSuper = true, of = "feedType")
 @Data
-@EqualsAndHashCode(of = "feedType")
 @Table(name = "timeline_feed")
 @NamedQuery(name = "TimelineFeed.findAll", query = "SELECT t FROM TimelineFeed t")
 public class TimelineFeed extends DBEntity implements Serializable {

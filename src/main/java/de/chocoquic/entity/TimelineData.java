@@ -22,8 +22,8 @@ import lombok.EqualsAndHashCode;
  *
  */
 @Entity
+@EqualsAndHashCode(callSuper=true, of = "aboutText")
 @Data
-@EqualsAndHashCode(of = "aboutText")
 @Table(name = "timeline_data")
 @NamedQueries({
     @NamedQuery(name = "TimelineData.findAll", query = "SELECT t FROM TimelineData t")

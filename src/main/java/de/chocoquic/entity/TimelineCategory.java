@@ -19,8 +19,8 @@ import lombok.EqualsAndHashCode;
  *
  */
 @Entity
+@EqualsAndHashCode(callSuper=true, of = "color")
 @Data
-@EqualsAndHashCode(of = "color")
 @Table(name = "timeline_category")
 @NamedQueries({    
     @NamedQuery(name = "TimelineCategory.findAll", query = "SELECT t FROM TimelineCategory t"),

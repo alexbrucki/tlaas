@@ -19,8 +19,8 @@ import lombok.EqualsAndHashCode;
  *
  */
 @Entity
+@EqualsAndHashCode(callSuper = true, of = "accountType")
 @Data
-@EqualsAndHashCode(of = "account_type")
 @Table(name = "timeline_user")
 @NamedQuery(name = "TimelineUser.findAll", query = "SELECT t FROM TimelineUser t")
 public class TimelineUser extends DBEntity implements Serializable {

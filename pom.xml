@@ -208,7 +208,7 @@
                     <target>SCRIPT</target>
                     <hibernateDialect>org.hibernate.dialect.MySQLDialect</hibernateDialect>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
-                    <outputFile>${project.basedir}/dbschema/schema.sql</outputFile>
+                    <outputFile>${basedir}/dbschema/schema.sql</outputFile>
                 </configuration>
             </plugin>
             <plugin>

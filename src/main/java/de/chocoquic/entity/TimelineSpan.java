@@ -19,8 +19,8 @@ import lombok.EqualsAndHashCode;
  *
  */
 @Entity
+@EqualsAndHashCode(callSuper=true, of = "color")
 @Data
-@EqualsAndHashCode(of = "color")
 @Table(name = "timeline_span")
 @NamedQuery(name = "TimelineSpan.findAll", query = "SELECT t FROM TimelineSpan t")
 public class TimelineSpan extends DBEntity implements Serializable {
