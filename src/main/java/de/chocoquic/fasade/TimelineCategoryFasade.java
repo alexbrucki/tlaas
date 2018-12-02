@@ -19,10 +19,18 @@ public class TimelineCategoryFasade extends GenericFasade<QTimelineCategory, Tim
     @Inject
     private EntityManager entityManager;
 
+    /**
+     * Find all TimelineCategory with this given TimelineData <br/>
+     * 
+     * //TODO Testing the JPAQuery or stay with the namedQuery
+     *
+     * @param timelineData
+     * @return allways A List
+     */
     public List<TimelineCategory> findByTimelineData(TimelineData timelineData) {
 //        TypedQuery<TimelineCategory> query = entityManager.createNamedQuery("TimelineCategory.findByTimelineData", TimelineCategory.class);
 //        query.setParameter("timelineData", timelineData);
-//        ArrayList<TimelineCategory> result = new ArrayList<>();
+//        List<TimelineCategory> result = new ArrayList<>();
 //        result.addAll(query.getResultList());
 // return result;
 

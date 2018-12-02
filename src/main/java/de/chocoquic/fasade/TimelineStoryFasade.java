@@ -7,6 +7,7 @@ import javax.persistence.TypedQuery;
 
 import de.chocoquic.entity.TimelineData;
 import de.chocoquic.entity.TimelineStory;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -19,10 +20,17 @@ public class TimelineStoryFasade extends GenericFasade<QTimelineStory, TimelineS
     @Inject
     private EntityManager entityManager;
 
-    public ArrayList<TimelineStory> findByTimelineData(TimelineData timelineData) {
+    /**
+     * Find all TimelineStory with this given TimelineData
+     *
+     * @param timelineData
+     * @return allways a List
+     */
+    public List<TimelineStory> findByTimelineData(TimelineData timelineData) {
         TypedQuery<TimelineStory> query = entityManager.createNamedQuery("TimelineStory.findAllByTimelineData", TimelineStory.class);
         query.setParameter("timelineData", timelineData);
-        ArrayList<TimelineStory> result = new ArrayList<>();
+
+        List<TimelineStory> result = new ArrayList<>();
         result.addAll(query.getResultList());
         return result;
     }

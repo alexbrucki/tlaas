@@ -13,10 +13,10 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.PostConstruct;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-import org.apache.log4j.Logger;
 import org.primefaces.event.ItemSelectEvent;
 import org.primefaces.event.timeline.TimelineSelectEvent;
 import org.primefaces.model.chart.AxisType;
@@ -26,14 +26,17 @@ import org.primefaces.model.chart.LineChartSeries;
 import org.primefaces.model.timeline.TimelineEvent;
 import org.primefaces.model.timeline.TimelineModel;
 
-
 import de.chocoquic.model.Categories;
 import de.chocoquic.model.Stories;
 import de.chocoquic.model.TLTimelineData;
+
 import java.util.Arrays;
+
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
 @Named("basicTimelineView")
@@ -41,50 +44,54 @@ import lombok.Data;
 @Data
 public class BasicTimelineView implements Serializable {
 
-    private TimelineModel model;
-    private String loggingPrefix = "Class BasicTimelineView";
+    static final Logger L = LoggerFactory.getLogger(BasicTimelineView.class);
+
     private boolean selectable = false;
     private boolean zoomable = true;
     private boolean moveable = true;
     private boolean stackEvents = true;
     private boolean snapEvents = false;
     private String eventStyle = "dot";
+
     private boolean axisOnTop;
     private boolean showCurrentTime = true;
     private boolean showNavigation = true;
+
     private Long zoomMax = 15552000000L;
     private Long zoomMin = 1296000000L;
+
     private Integer eventMargin = 1;
     private Integer eventMarginAxis = 1;
+
     private Date min;
     private Date max;
     private Date start;
     private Date end;
+
     private TLTimelineData data;
-    private LineChartModel dateModel;
+    private TimelineModel model = new TimelineModel();
+
+    private LineChartModel dateModel = new LineChartModel();
 
     private String link;
     private String storyTitle;
     private String storyText;
     private String storyDate;
+
     private Boolean linkRendered;
 
-    DateFormat format;
-    HashMap<String, Categories> catMap;
-    HashMap<String, LineChartSeries> serMap;
-    HashMap<String, Stories> storMap;
-    static Logger logger;
+    private DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private HashMap<String, Categories> catMap = new HashMap<>();
+    private HashMap<String, LineChartSeries> serMap = new HashMap<>();
+    private HashMap<String, Stories> storMap = new HashMap<>();
 
     @PostConstruct
     protected void initialize() {
-        dateModel = new LineChartModel();
-        format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        model = new TimelineModel();
-        logger.info("building Maps");
-        catMap = new HashMap<>();
-        serMap = new HashMap<>();
-        storMap = new HashMap<>();
-        logger.info("Maps built");
+        if (data == null) {
+            L.error("TLTimelineData is null, please set it");
+            return;
+        }
+        L.info("Maps built");
         data.getCategories().stream().map((c) -> {
             catMap.put(c.getId(), c);
             return c;
@@ -93,14 +100,13 @@ public class BasicTimelineView implements Serializable {
             series.setLabel(c.getTitle());
             series.setShowLine(false);
             serMap.put(c.getId(), series);
-            logger.info("Category added: " + c.getId());
+            L.info("Category added: " + c.getId());
         });
 
-        int i = 0;
-        Random randomGenerator = new Random();
+        Random random = new Random();
         Calendar cal = Calendar.getInstance();
         data.getStories().stream().forEach((s) -> {
-            logger.info("Story added: " + s.getTitle());
+            L.info("Story added: " + s.getTitle());
             try {
                 adjustStartDateAndAddToStoryMap(cal, s);
 
@@ -114,7 +120,7 @@ public class BasicTimelineView implements Serializable {
                     categoryId = categories.getId();
                     if (null != startDate && null != endDate) {
                         TimelineEvent event = new TimelineEvent(s, startDate);
-                        Double d = randomGenerator.nextDouble();
+                        Double d = random.nextDouble();
                         model.add(event);
                         serMap.get(s.getCategory()).set(s.getStartDate(), d);
                     }
@@ -144,61 +150,57 @@ public class BasicTimelineView implements Serializable {
                     }
                 }
 
-            } catch (ParseException e) {
-                logger.info("parse exception in Json: " + e.getMessage());
-            } catch (Exception e) {
-                logger.info(loggingPrefix + " Exception in Method initialize while parsin json: " + e.getMessage() + " " + Arrays.toString(e.getStackTrace()));
+            } catch (ParseException parseEx) {
+                L.error("parse exception in Json: {}", parseEx.getMessage());
+            } catch (Exception ex) {
+                L.error(" Exception in Method initialize while parsin json: {}, {}", ex.getMessage(), Arrays.toString(ex.getStackTrace()));
             }
         });
+
         StringBuilder seriesColors = new StringBuilder();
-        try {
-            serMap.keySet().stream().map((key) -> {
-                dateModel.addSeries(serMap.get(key));
-                return key;
-            }).forEachOrdered((key) -> {
-                if (seriesColors.length() < 1) {
-                    seriesColors.append(catMap.get(key).getColour());
-                } else {
-                    seriesColors.append(",");
-                    seriesColors.append(catMap.get(key).getColour());
-                }
-            });
 
-            dateModel.setSeriesColors(seriesColors.toString());
+        serMap.keySet().stream().map((key) -> {
+            dateModel.addSeries(serMap.get(key));
+            return key;
+        }).forEach((key) -> {
+            if (seriesColors.length() < 1) {
+                seriesColors.append(catMap.get(key).getColour());
+            } else {
+                seriesColors.append(",");
+                seriesColors.append(catMap.get(key).getColour());
+            }
+        });
 
-            dateModel.setTitle("Events");
-            dateModel.setZoom(false);
-            dateModel.getAxis(AxisType.Y).setLabel("");
-            dateModel.getAxis(AxisType.Y).setMax(2);
-            dateModel.getAxis(AxisType.Y).setMin(-1);
-            DateAxis axis = new DateAxis("");
-            axis.setTickFormat("%#d. %b. %y");
-            dateModel.getAxes().put(AxisType.X, axis);
-            System.out.println("done");
-        } catch (Exception ex) {
-            logger.error("unexpected exception " + ex.getMessage() + " " + ex.getMessage());
-        }
+        //build up the dataModel
+        dateModel.setSeriesColors(seriesColors.toString());
+        dateModel.setTitle("Events");
+        dateModel.setZoom(false);
+        dateModel.getAxis(AxisType.Y).setLabel("");
+        dateModel.getAxis(AxisType.Y).setMax(2);
+        dateModel.getAxis(AxisType.Y).setMin(-1);
+        DateAxis axis = new DateAxis("");
+        axis.setTickFormat("%#d. %b. %y");
+        dateModel.getAxes().put(AxisType.X, axis);
 
+        L.info("done");
     }
 
-    private void adjustStartDateAndAddToStoryMap(Calendar cal, Stories s) {
-        if (!storMap.containsKey(s.getStartDate())) {
-            storMap.put(s.getStartDate(), s);
-
+    private void adjustStartDateAndAddToStoryMap(Calendar calendar, Stories stories) {
+        if (!storMap.containsKey(stories.getStartDate())) {
+            storMap.put(stories.getStartDate(), stories);
         } else {
-
             try {
-                cal.setTime(format.parse(s.getStartDate()));
-                cal.add(Calendar.SECOND, 1);
-                s.setStartDate(format.format(cal.getTime()));
-                cal.setTime(format.parse(s.getEndDate()));
-                cal.add(Calendar.SECOND, 1);
-                s.setEndDate(format.format(cal.getTime()));
+                calendar.setTime(format.parse(stories.getStartDate()));
+                calendar.add(Calendar.SECOND, 1);
+                calendar.setTime(format.parse(stories.getEndDate()));
+                calendar.add(Calendar.SECOND, 1);
+
+                stories.setStartDate(format.format(calendar.getTime()));
+                stories.setEndDate(format.format(calendar.getTime()));
             } catch (ParseException ex) {
-                // TODO Auto-generated catch block
-                logger.error("ParseException " + ex.getMessage());
+                L.error("ParseException {}", ex.getMessage());
             }
-            adjustStartDateAndAddToStoryMap(cal, s);
+            adjustStartDateAndAddToStoryMap(calendar, stories);
         }
     }
 
@@ -213,12 +215,14 @@ public class BasicTimelineView implements Serializable {
                     dates.add((String) key);
                 });
         Collections.sort(dates);
+
         Date d = null;
         try {
             d = format.parse(dates.get(event.getItemIndex()));
         } catch (ParseException ex) {
-            logger.error("ParseException " + ex.getMessage());
+            L.error("ParseException {}", ex.getMessage());
         }
+
         if (null != d) {
             this.start = d;
         }
@@ -227,8 +231,7 @@ public class BasicTimelineView implements Serializable {
     public void onSelect(TimelineSelectEvent e) {
         TimelineEvent timelineEvent = e.getTimelineEvent();
 
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected event:",
-                timelineEvent.getData().toString());
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected event:", timelineEvent.getData().toString());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
@@ -269,6 +272,5 @@ public class BasicTimelineView implements Serializable {
 
     public void test() throws Exception {
         throw new RuntimeException();
-
     }
 }

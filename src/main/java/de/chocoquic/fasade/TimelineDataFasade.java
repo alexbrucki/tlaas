@@ -14,8 +14,6 @@ public class TimelineDataFasade extends GenericFasade<QTimelineData, TimelineDat
     @Inject
     private EntityManager entityManager;
 
-//    public TimelineData findById(Long id) {
-//        return entityManager.find(TimelineData.class, id);
-//    }
+
 
 }
