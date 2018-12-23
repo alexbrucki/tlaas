@@ -1,5 +1,6 @@
 package de.chocoquic.fasade;
 
+import com.querydsl.core.types.EntityPath;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -12,7 +13,9 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import com.querydsl.core.types.EntityPath;
+import com.querydsl.core.types.dsl.EntityPathBase;
+import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.core.types.dsl.PathBuilderFactory;
 import com.querydsl.jpa.impl.JPAQuery;
 
 import de.chocoquic.entity.EagerAble;
@@ -21,12 +24,11 @@ import javax.enterprise.inject.Produces;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 
-
 @Singleton()
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 @Named("genericFasade")
 @SuppressWarnings("serial")
-public class GenericFasade<Path extends EntityPath, T> implements Serializable {
+public class GenericFasade<T> implements Serializable {
 
     private static final int BULK_INSERT_BATCH_SIZE = 50;
 
@@ -36,36 +38,25 @@ public class GenericFasade<Path extends EntityPath, T> implements Serializable {
 
     private Class<T> defineClass;
 
-    protected Path qPath;
+    private PathBuilder<?> builder;    
+   
+    public EntityPath qPath;
 
-    public Class<T> getDefineClass() {
-        return defineClass;
+    public GenericFasade() {
     }
 
-    public Path getqPath() {
-        return qPath;
-    }
-
-    public void setqPath(Path qPath) {
-        this.qPath = qPath;
-    }
-
-    public void setDefineClass(Class<T> defineClass) {
-        this.defineClass = defineClass;
-    }
-
-    public GenericFasade(Class<T> entityClass, Path qPath) {
+    public GenericFasade(Class<T> entityClass) {
         this.defineClass = entityClass;
-        this.qPath = qPath;
+        this.builder = new PathBuilderFactory().create(entityClass);
+        this.qPath = new EntityPathBase<>(this.defineClass, this.defineClass.getSimpleName());
     }
 
     @Produces
     public EntityManager getEntityManager() {
         return em;
     }
-
-    public GenericFasade() {
-    }
+    
+    
 
     /**
      * Returns the entity identified by Id or null if non found.
@@ -140,11 +131,12 @@ public class GenericFasade<Path extends EntityPath, T> implements Serializable {
     public <T> List<T> findAll(Class<T> entityClass) {
         validate(entityClass);
 
-        JPAQuery query = new JPAQuery(em);
-        return query.from(qPath).fetch();
+        JPAQuery query = new JPAQuery(em);      
+        
+        return  query.from(qPath).fetch();
     }
-    
-     /**
+
+    /**
      * Returns all entities of the defineClass or an empty list. This is the
      * eager implementation. If the Entity implements {@link EagerAble}, the
      * method fetchEager is called in the transaction.
@@ -170,7 +162,8 @@ public class GenericFasade<Path extends EntityPath, T> implements Serializable {
     public <T> List<T> findAll(Class<T> entityClass, int start, int amount) {
         validate(entityClass);
 
-        JPAQuery query = new JPAQuery(em);
+        JPAQuery query = new JPAQuery(em); 
+        
         return query.from(qPath).fetch().subList(start, amount);
     }
 
@@ -350,5 +343,19 @@ public class GenericFasade<Path extends EntityPath, T> implements Serializable {
     private void clear() {
         em.clear();
     }
+
+
+    /**
+     * Returns a {@link PathBuilder} for the configured domain type.
+     *
+     * @param <T>
+     * @return the Querdsl {@link PathBuilder}.
+     */
+    @SuppressWarnings("unchecked")
+    protected <T> PathBuilder<T> getBuilder() {
+        return (PathBuilder<T>) builder;
+    }
+
+ 
 
 }

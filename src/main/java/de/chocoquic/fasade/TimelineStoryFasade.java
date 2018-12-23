@@ -1,6 +1,5 @@
 package de.chocoquic.fasade;
 
-import de.chocoquic.entity.QTimelineStory;
 import java.util.ArrayList;
 
 import javax.persistence.TypedQuery;
@@ -15,7 +14,7 @@ import javax.persistence.EntityManager;
 
 @Named
 @ApplicationScoped
-public class TimelineStoryFasade extends GenericFasade<QTimelineStory, TimelineStory> {
+public class TimelineStoryFasade extends GenericFasade<TimelineStory> {
 
     @Inject
     private EntityManager entityManager;

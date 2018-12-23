@@ -1,27 +1,29 @@
 package de.chocoquic.fasade;
 
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
-import de.chocoquic.entity.QTimelineCategory;
 
 import de.chocoquic.entity.TimelineCategory;
 import de.chocoquic.entity.TimelineData;
+import java.util.ArrayList;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Named
 @ApplicationScoped
-public class TimelineCategoryFasade extends GenericFasade<QTimelineCategory, TimelineCategory> {
+public class TimelineCategoryFasade extends GenericFasade<TimelineCategory> {
 
     @Inject
-    private EntityManager entityManager;
+    private EntityManager em;
 
     /**
      * Find all TimelineCategory with this given TimelineData <br/>
-     * 
+     *
      * //TODO Testing the JPAQuery or stay with the namedQuery
      *
      * @param timelineData
@@ -34,11 +36,10 @@ public class TimelineCategoryFasade extends GenericFasade<QTimelineCategory, Tim
 //        result.addAll(query.getResultList());
 // return result;
 
-        return new JPAQuery<TimelineCategory>(entityManager)
+        Predicate filter = getBuilder().getSimple("timelineData", TimelineData.class).eq(timelineData);
+        return new JPAQuery<TimelineCategory>(em)
                 .from(qPath)
-                .where(qPath.timelineData.eq(timelineData))
-                .fetch();
-
-    }
+                .where(filter).fetch();
+}
 
 }
